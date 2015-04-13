@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+	<pre id="editor" style="height: 400px; width: 600px;"></pre>
+	<script src="{{ url_for("static", filename="ace/ace.js") }}"></script>
+
+	<script>
+		var editor = ace.edit("editor");
+		editor.setTheme("ace/theme/monokai");
+		editor.getSession().setMode("ace/mode/javascript");
+	</script>
+{% endblock %}
