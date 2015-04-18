@@ -19,6 +19,9 @@ h2              { font-size: 1.2em; }
 
 #editor {
 	position: relative;
+  height: 30em;
+  width: auto;
+  border: 2px solid #ccc;
 }
 
 #logo {
