@@ -1,7 +1,7 @@
 from app import app
 from flask import request, session, g, redirect, url_for, \
 abort, render_template, flash
-
+from string import capwords as capitalize
 @app.route('/')
 def show_entries():
 	cur = g.db.execute("select title, text from entries order by id desc")
@@ -40,4 +40,8 @@ def logout():
 
 @app.route("/edit")
 def edit():
-	return render_template("edit.html")
+	defaults = {"defaultMode": "python",
+				"lineNumbers": "true",
+				"supportedModes": ["javascript", "python", "ruby"],
+				"capwords": capitalize}
+	return render_template("edit.html", **defaults)

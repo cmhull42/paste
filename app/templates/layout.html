@@ -1,6 +1,11 @@
 <!doctype html>
-<title>Paste - a hostable pastebin</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<html>
+<head>
+  <title>Paste - a hostable pastebin</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
 <div class=page>
   <h1><a href="/" id="logo">Paste</a></h1>
   <div class=metanav>
@@ -15,3 +20,6 @@
   {% endfor %}
   {% block body %}{% endblock %}
 </div>
+{% block scripts %}{% endblock %}
+</body>
+</html>

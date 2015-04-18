@@ -1,11 +1,41 @@
 {% extends "layout.html" %}
-{% block body %}
-	<pre id="editor" style="height: 400px; width: 600px;"></pre>
-	<script src="{{ url_for("static", filename="ace/ace.js") }}"></script>
+{% block head %}
+	<link rel="stylesheet", href="{{ url_for("static", filename="codemirror/codemirror.css") }}">
+{% endblock %}
 
+{% block body %}
+	<div id="editor"></div>
+	<select onChange="setMode(this.value)" selected="{{ defaultMode }}">
+		{% for mode in supportedModes %}
+			<option value="{{ mode }}" {% if mode == defaultMode %} selected="selected" {% endif %}>
+				{{ capwords(mode) }}
+			</option>
+		{% endfor %}
+	</select>
+	<input type="checkbox" name="linenumbers"
+	{% if lineNumbers == "true" %} checked="checked" {% endif %}
+	onChange="setLineNumbers(this)">
+		Line Numbers
+	</input>
+{% endblock %}
+
+{% block scripts %}
+	<script src="{{ url_for('static', filename='codemirror/codemirror.js') }}"></script>
 	<script>
-		var editor = ace.edit("editor");
-		editor.setTheme("ace/theme/monokai");
-		editor.getSession().setMode("ace/mode/javascript");
+		CodeMirror.modeURL = "{{ url_for('static', filename='')+'codemirror/mode/%N/%N.js' }}";
 	</script>
+	<script src="{{ url_for('static', filename='codemirror/loadmode.js') }}"></script>
+	<script>
+	var myCodeMirror = CodeMirror(document.getElementById('editor'), {
+		"lineNumbers": {{ lineNumbers }}
+	});
+	setMode("{{ defaultMode }}");
+	function setMode(mode) {
+		myCodeMirror.setOption("mode", mode);
+		CodeMirror.autoLoadMode(myCodeMirror, mode);
+	};
+	function setLineNumbers(linenumbers) {
+		myCodeMirror.setOption("lineNumbers", linenumbers.checked);
+	}
+</script>
 {% endblock %}
