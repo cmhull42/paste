@@ -1,5 +1,9 @@
-DATABASE = '/tmp/paste.db'
+DRIVER="{MySQL}"
+DB_SERVER = "localhost"
+DATABASE = "paste"
 DEBUG = True
 SECRET_KEY = 'development key'
-USERNAME = 'admin'
-PASSWORD = 'default'
+USERNAME = 'paste'
+PASSWORD = 'pasteuser1'
+SALT = "KJAShfdkjalshdfuiagldfjblaf"
+SUPPORTED_MODES = ["javascript", "python", "ruby"]

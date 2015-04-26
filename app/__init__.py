@@ -1,13 +1,22 @@
 import sqlite3
 from flask import Flask, g
 from contextlib import closing
+from hashids import Hashids
+import string, pyodbc
 
 app = Flask(__name__)
 app.config.from_object("config")
+hashids = Hashids(app.config["SALT"], 7, string.ascii_letters+string.digits)
 from app import views
 
 def connect_db():
-	return sqlite3.connect(app.config['DATABASE'])
+	connectionString = 'DRIVER={};SERVER={};DATABASE={};UID={};PWD={}'.format(
+							app.config["DRIVER"],
+							app.config["DB_SERVER"],
+							app.config["DATABASE"],
+							app.config["USERNAME"],
+							app.config["PASSWORD"])
+	return pyodbc.connect(connectionString)
 
 def init_db():
 	with closing(connect_db()) as db:

@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% block head %}
+  <link rel="stylesheet", href="{{ url_for('static', filename='codemirror/lib/codemirror.css') }}">
+{% endblock %}
+
+{% block body %}
+  <h2> {{ title }} - {{ createdAt }} </h2>
+  <div id="editor"></div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='codemirror/lib/codemirror.js') }}"></script>
+  <script>
+    CodeMirror.modeURL = "{{ url_for('static', filename='')+'codemirror/mode/%N/%N.js' }}";
+  </script>
+  <script src="{{ url_for('static', filename='codemirror/lib/loadmode.js') }}"></script>
+  <script>
+	var myCodeMirror = CodeMirror(document.getElementById('editor'), {
+		"lineNumbers": "{{ linenumbers }}",
+		"readOnly": {{ readOnly }},
+	});
+  
+  setMode("{{ language }}");
+	function setMode(mode) {
+		myCodeMirror.setOption("mode", mode);
+		CodeMirror.autoLoadMode(myCodeMirror, mode);
+	};
+  myCodeMirror.setValue({{ pasteValue|tojson|safe }});
+
+  </script>
+{% endblock %}

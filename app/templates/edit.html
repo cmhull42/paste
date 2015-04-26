@@ -1,41 +1,63 @@
 {% extends "layout.html" %}
 {% block head %}
-	<link rel="stylesheet", href="{{ url_for("static", filename="codemirror/codemirror.css") }}">
+	<link rel="stylesheet", href="{{ url_for("static", filename="codemirror/lib/codemirror.css") }}">
 {% endblock %}
 
 {% block body %}
+<form id="pasteForm" action="{{ url_for('add_entry') }}" method=post>
 	<div id="editor"></div>
-	<select onChange="setMode(this.value)" selected="{{ defaultMode }}">
+	<select onChange="setMode(this.value)" selected="{{ language }}">
 		{% for mode in supportedModes %}
-			<option value="{{ mode }}" {% if mode == defaultMode %} selected="selected" {% endif %}>
+			<option value="{{ mode }}"
+			{% if mode == defaultMode %} selected="selected" {% endif %}>
 				{{ capwords(mode) }}
 			</option>
 		{% endfor %}
 	</select>
 	<input type="checkbox" name="linenumbers"
-	{% if lineNumbers == "true" %} checked="checked" {% endif %}
+	{% if linenumbers == "true" %} checked="checked" {% endif %}
 	onChange="setLineNumbers(this)">
 		Line Numbers
 	</input>
+	<button type="button" onClick="formSubmit()" class="buttonSub">Paste!</button>
+</form>
 {% endblock %}
 
 {% block scripts %}
-	<script src="{{ url_for('static', filename='codemirror/codemirror.js') }}"></script>
+	<script src="{{ url_for('static', filename='codemirror/lib/codemirror.js') }}"></script>
 	<script>
 		CodeMirror.modeURL = "{{ url_for('static', filename='')+'codemirror/mode/%N/%N.js' }}";
 	</script>
-	<script src="{{ url_for('static', filename='codemirror/loadmode.js') }}"></script>
+  <script src="{{ url_for('static', filename='codemirror/lib/loadmode.js') }}"></script>
 	<script>
 	var myCodeMirror = CodeMirror(document.getElementById('editor'), {
-		"lineNumbers": {{ lineNumbers }}
+		"lineNumbers": "{{ linenumbers }}",
+		"value": "{{ pasteValue }}",
+		"readOnly": {{ readOnly }}
 	});
-	setMode("{{ defaultMode }}");
+	setMode("{{ language }}");
 	function setMode(mode) {
 		myCodeMirror.setOption("mode", mode);
 		CodeMirror.autoLoadMode(myCodeMirror, mode);
 	};
 	function setLineNumbers(linenumbers) {
 		myCodeMirror.setOption("lineNumbers", linenumbers.checked);
-	}
+	};
+	function formSubmit() {
+		var form = document.getElementById("pasteForm");
+
+		var codeField = document.createElement("input");
+		codeField.setAttribute("type", "hidden");
+		codeField.setAttribute("name", "text");
+		codeField.setAttribute("value", myCodeMirror.getValue());
+
+		var languageField = document.createElement("input");
+		languageField.setAttribute("type", "hidden");
+		languageField.setAttribute("name", "language");
+		languageField.setAttribute("value", myCodeMirror.getOption("mode"));
+		form.appendChild(codeField);
+		form.appendChild(languageField);
+		form.submit();
+	};
 </script>
 {% endblock %}
